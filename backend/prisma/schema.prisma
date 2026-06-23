@@ -1,0 +1,251 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-paid"
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
+}
+
+enum QueueTarget {
+  KITCHEN
+  BAR
+}
+
+enum RecommendationSource {
+  LAST_ORDER
+  FAVORITE
+  FREQUENT
+  RULE_BASED
+  COLLABORATIVE
+  BEST_SELLER
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  mobile        String   @unique
+  name          String?
+  loyaltyPoints Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  orders        Order[]
+  recommendations Recommendation[]
+  feedback      CustomerFeedback[]
+}
+
+model MenuCategory {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  icon      String     // Lucide icon name, e.g. "Coffee", "Wine", "Pizza"
+  sortOrder Int        @default(0)
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     MenuItem[]
+}
+
+model MenuItem {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  isVeg       Boolean      @default(false)
+  isAvailable Boolean      @default(true)
+  trackStock  Boolean      @default(false)
+  stockQuantity Int?
+  lowStockAt  Int          @default(5)
+  categoryId  String
+  category    MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  addOns      Json?        // List of available add-ons, e.g. [{"name": "Extra Cheese", "price": 1.5}, {"name": "Oat Milk", "price": 0.8}]
+  targetQueue QueueTarget  @default(KITCHEN)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  orderItems  OrderItem[]
+  recommendations Recommendation[]
+  inventoryTransactions InventoryTransaction[]
+
+  @@unique([name, categoryId])
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  orderNumber String      @unique // e.g. #1001, #1002
+  customerId  String
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  tableNumber String
+  notes       String?
+  totalPrice  Float
+  tax         Float       @default(0)
+  discount    Float       @default(0)
+  finalPrice  Float
+  status      OrderStatus @default(PENDING)
+  isPaid      Boolean     @default(false)
+  paidAt      DateTime?
+  paymentMethod String?
+  paymentStatus String     @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  paymentGateway String?
+  gatewayOrderId String?
+  gatewayPaymentId String?
+  cancelUntil DateTime?
+  cancelledAt DateTime?
+  refundStatus String     @default("NONE") // NONE, NOT_ALLOWED, DENIED
+  refundDeniedReason String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  items       OrderItem[]
+  payments    Payment[]
+  kitchenQueue KitchenQueue[]
+  barQueue     BarQueue[]
+  feedback      CustomerFeedback[]
+
+  @@index([status, createdAt])
+  @@index([customerId, createdAt])
+  @@index([tableNumber, status])
+}
+
+model Payment {
+  id               String   @id @default(uuid())
+  orderId          String
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  gateway          String
+  merchantOrderId  String   @unique
+  gatewayOrderId   String?
+  gatewayPaymentId String?
+  amount           Float
+  status           String   @default("PENDING") // PENDING, PAID, FAILED, CANCELLED, REFUNDED
+  method           String?
+  redirectUrl      String?
+  rawResponse      Json?
+  rawWebhook       Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([orderId, status])
+  @@index([gateway, status])
+}
+
+model OrderItem {
+  id             String      @id @default(uuid())
+  orderId        String
+  order          Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId     String
+  menuItem       MenuItem    @relation(fields: [menuItemId], references: [id])
+  quantity       Int
+  unitPrice      Float
+  notes          String?
+  addOnsSelected Json?       // List of selected add-ons, e.g. [{"name": "Extra Cheese", "price": 1.5}]
+  status         OrderStatus @default(PENDING)
+  targetQueue    QueueTarget @default(KITCHEN)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([orderId, status])
+  @@index([menuItemId])
+}
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  name      String
+  role      String   @default("ADMIN") // ADMIN, STAFF
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  shifts    StaffShift[]
+  inventoryTransactions InventoryTransaction[]
+}
+
+model AppSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model CustomerFeedback {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  @@index([orderId])
+  @@index([customerId, createdAt])
+}
+
+model InventoryTransaction {
+  id         String    @id @default(uuid())
+  menuItemId String
+  menuItem   MenuItem  @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  type       String    // PURCHASE, WASTAGE, ADJUSTMENT, ORDER_DEDUCT
+  quantity   Int
+  note       String?
+  unitCost   Float?
+  createdById String?
+  createdBy AdminUser? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@index([menuItemId, createdAt])
+  @@index([type, createdAt])
+}
+
+model StaffShift {
+  id         String    @id @default(uuid())
+  userId     String
+  user       AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkInAt  DateTime  @default(now())
+  checkOutAt DateTime?
+  note       String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([userId, checkInAt])
+}
+
+model Recommendation {
+  id          String               @id @default(uuid())
+  customerId  String?
+  customer    Customer?            @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  menuItemId  String?
+  menuItem    MenuItem?            @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
+  source      RecommendationSource
+  reason      String
+  shownAt     DateTime             @default(now())
+  acceptedAt  DateTime?
+
+  @@index([source])
+  @@index([customerId, shownAt])
+  @@unique([customerId, menuItemId, source])
+}
+
+model KitchenQueue {
+  id        String      @id @default(uuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus @default(PENDING)
+  priority  Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model BarQueue {
+  id        String      @id @default(uuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus @default(PENDING)
+  priority  Int         @default(0)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}

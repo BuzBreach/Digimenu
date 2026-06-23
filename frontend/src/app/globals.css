@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  
+  --color-beige-50: #FDFBF7;
+  --color-beige-100: #FAF6EE;
+  --color-beige-200: #F2ECE0;
+  --color-beige-300: #E6DCD0;
+  --color-beige-400: #CBBCA9;
+  
+  --color-espresso-950: #1B1311;
+  --color-espresso-900: #291D1A;
+  --color-espresso-800: #3C2D29;
+  --color-espresso-600: #5D4742;
+  --color-espresso-400: #8C726C;
+  
+  --color-terracotta-500: #C25946;
+  --color-terracotta-600: #A84937;
+  --color-terracotta-700: #8E3A2B;
+  
+  --color-gold-500: #C19A6B;
+  --color-gold-600: #AF885B;
+  
+  --color-sage-500: #7E8F7A;
+  --color-sage-600: #6B7B68;
+}
+
+:root {
+  --background: #FAF6EE;
+  --foreground: #291D1A;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF6EE;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E6DCD0;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #CBBCA9;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(250, 246, 238, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(41, 29, 26, 0.05);
+}
+
+.glass-panel-dark {
+  background: rgba(27, 19, 17, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Premium Typography classes */
+.font-serif-elegant {
+  font-family: var(--font-serif);
+}
+
+.text-stroke-brown {
+  -webkit-text-stroke: 1px rgba(41, 29, 26, 0.1);
+}
+
+/* Smooth transitions */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 4mm;
+  }
+
+  body {
+    background: white;
+  }
+
+  #bill-print-area {
+    width: 72mm;
+    color: #111;
+    font-size: 11px;
+  }
+}

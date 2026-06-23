@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: niva-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kathadb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - niva-network
+
+  backend:
+    build: ./backend
+    container_name: niva-backend
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/kathadb?schema=public"
+      JWT_SECRET: "niva_secret_token_12345_for_premium_cafe_pos_system"
+      PORT: 5000
+      CAFE_NAME: "${CAFE_NAME:-Niva Cafe}"
+      CAFE_LEGAL_NAME: "${CAFE_LEGAL_NAME:-Niva Cafe, Bar & Kitchen}"
+      SMS_PROVIDER: "${SMS_PROVIDER:-}"
+      FAST2SMS_API_KEY: "${FAST2SMS_API_KEY:-}"
+      FAST2SMS_SENDER_ID: "${FAST2SMS_SENDER_ID:-NIVA}"
+      TWILIO_ACCOUNT_SID: "${TWILIO_ACCOUNT_SID:-}"
+      TWILIO_AUTH_TOKEN: "${TWILIO_AUTH_TOKEN:-}"
+      TWILIO_FROM_NUMBER: "${TWILIO_FROM_NUMBER:-}"
+      SMS_DEFAULT_COUNTRY_CODE: "${SMS_DEFAULT_COUNTRY_CODE:-+91}"
+    depends_on:
+      - postgres
+    networks:
+      - niva-network
+
+  frontend:
+    build: ./frontend
+    container_name: niva-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_CAFE_NAME: "${NEXT_PUBLIC_CAFE_NAME:-Niva Cafe}"
+      NEXT_PUBLIC_CAFE_SHORT_NAME: "${NEXT_PUBLIC_CAFE_SHORT_NAME:-Niva}"
+      NEXT_PUBLIC_CAFE_LEGAL_NAME: "${NEXT_PUBLIC_CAFE_LEGAL_NAME:-Niva Cafe, Bar & Kitchen}"
+      NEXT_PUBLIC_CAFE_CATEGORY: "${NEXT_PUBLIC_CAFE_CATEGORY:-Cafe, Bar & Kitchen}"
+      NEXT_PUBLIC_UPI_ID: "${NEXT_PUBLIC_UPI_ID:-niva.cafe@upi}"
+      NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL:-http://localhost:5000}"
+    depends_on:
+      - backend
+    networks:
+      - niva-network
+
+volumes:
+  postgres_data:
+
+networks:
+  niva-network:
+    driver: bridge

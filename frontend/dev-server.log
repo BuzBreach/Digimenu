@@ -1,0 +1,12 @@
+
+> frontend@0.1.0 start
+> next start
+
+   ▲ Next.js 15.5.18
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.29.242:3000
+
+ ✓ Starting...
+ ✓ Ready in 1150ms
+(node:12140) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
