@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getSocket } from '../../utils/socket';
-import { ReceiptText, Printer, RefreshCw, XCircle } from 'lucide-react';
+import { ReceiptText, Printer, RefreshCw, XCircle, CheckCircle } from 'lucide-react';
 import { formatCurrency } from '../../utils/currency';
 
 export default function BillingCounterPage() {
@@ -13,7 +13,7 @@ export default function BillingCounterPage() {
   const [loading, setLoading] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
 
-  const getServerUrl = () => `http://${window.location.hostname}:5000`;
+  const getServerUrl = () => '';
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -74,6 +74,28 @@ export default function BillingCounterPage() {
     await fetchOrders();
   };
 
+  const markAsCompleted = async (order: any) => {
+    const token = localStorage.getItem('niva_admin_token');
+    try {
+      const res = await fetch(`${getServerUrl()}/api/admin/orders/${order.id}/status`, {
+        method: 'PUT',
+        headers: { 
+          Authorization: `Bearer ${token || ''}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'SERVED' }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Failed to mark bill as paid/completed.');
+        return;
+      }
+      await fetchOrders();
+    } catch (err: any) {
+      alert(err.message || 'Error marking bill as paid/completed.');
+    }
+  };
+
   const visibleOrders = orders.filter((order) => order.status !== 'CANCELLED');
   const formatAddedAt = (date: string) =>
     new Intl.DateTimeFormat(undefined, {
@@ -122,6 +144,9 @@ export default function BillingCounterPage() {
                   <p className="text-[10px] text-espresso-400 font-bold mt-0.5">
                     {order.items?.length || 0} item lines in one combined bill
                   </p>
+                  {order.status === 'SERVED' && (
+                    <p className="text-[10px] text-green-600 font-bold mt-1">✓ PAID & COMPLETED</p>
+                  )}
                   {order.refundDeniedReason && (
                     <p className="text-[10px] text-terracotta-600 font-bold mt-1">{order.refundDeniedReason}</p>
                   )}
@@ -130,6 +155,18 @@ export default function BillingCounterPage() {
                   <button onClick={() => printBill(order)} className="px-3 py-2 rounded-full bg-espresso-950 text-beige-100 text-xs font-bold flex items-center gap-1.5">
                     <Printer className="w-3.5 h-3.5" />
                     Print
+                  </button>
+                  <button 
+                    onClick={() => markAsCompleted(order)} 
+                    disabled={order.status === 'SERVED'}
+                    className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${
+                      order.status === 'SERVED' 
+                        ? 'bg-green-100 text-green-600 cursor-not-allowed'
+                        : 'bg-green-600 text-white hover:bg-green-700'
+                    }`}
+                  >
+                    <CheckCircle className="w-3.5 h-3.5" />
+                    {order.status === 'SERVED' ? 'Completed' : 'Mark Paid'}
                   </button>
                   <button onClick={() => denyRefund(order)} className="px-3 py-2 rounded-full bg-terracotta-500/10 text-terracotta-600 text-xs font-bold flex items-center gap-1.5">
                     <XCircle className="w-3.5 h-3.5" />

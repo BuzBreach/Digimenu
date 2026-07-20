@@ -50,7 +50,7 @@ export default function KitchenDisplaySystem() {
   // Fetch initial active orders on mount
   const fetchOrders = async () => {
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       const accessToken = new URLSearchParams(window.location.search).get('access');
       if (accessToken) localStorage.setItem('niva_admin_token', accessToken);
       const token = accessToken || localStorage.getItem('niva_admin_token');
@@ -117,7 +117,7 @@ export default function KitchenDisplaySystem() {
   // Update order item status on double click or button click
   const handleUpdateItemStatus = async (orderId: string, itemId: string, nextStatus: string) => {
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       const token = localStorage.getItem('niva_admin_token');
 
       const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/items/${itemId}/status`, {
@@ -144,7 +144,7 @@ export default function KitchenDisplaySystem() {
   // Update overall order status (e.g. mark entire order ready or served)
   const handleUpdateOrderStatus = async (orderId: string, nextStatus: string) => {
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       const token = localStorage.getItem('niva_admin_token');
 
       const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/status`, {

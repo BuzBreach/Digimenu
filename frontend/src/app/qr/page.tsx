@@ -5,8 +5,7 @@ import { QrCode, Printer } from 'lucide-react';
 
 export default function QRMenuPage() {
   const [tables, setTables] = useState(20);
-  const host = typeof window === 'undefined' ? 'localhost' : window.location.hostname;
-  const serverUrl = `http://${host}:5000`;
+  const appOrigin = typeof window === 'undefined' ? 'http://localhost:3000' : window.location.origin;
 
   const tableList = useMemo(() => Array.from({ length: tables }, (_, index) => index + 1), [tables]);
 
@@ -35,7 +34,7 @@ export default function QRMenuPage() {
 
       <section className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {tableList.map((table) => {
-          const url = `http://${host}:3000/?table=${table}`;
+          const url = `${appOrigin}/?table=${table}`;
           return (
             <article key={table} className="bg-white rounded-2xl border border-beige-300/40 shadow-sm p-5 text-center break-inside-avoid">
               <div className="flex justify-center mb-3 text-espresso-900">
@@ -43,7 +42,7 @@ export default function QRMenuPage() {
               </div>
               <h2 className="text-2xl font-serif-elegant font-bold">Table {table}</h2>
               <img
-                src={`${serverUrl}/api/qr/table/${table}`}
+                src={`/api/qr/table/${table}`}
                 alt={`QR code for table ${table}`}
                 className="w-48 h-48 mx-auto my-4 border border-beige-200 rounded-xl"
               />

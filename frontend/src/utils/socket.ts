@@ -4,10 +4,8 @@ let socket: Socket | null = null;
 
 export const getSocket = (): Socket => {
   if (!socket) {
-    // Dynamically connect to the host's IP on port 5000 (express backend)
-    // This allows seamless local network connection out-of-the-box!
     const serverUrl = typeof window !== 'undefined'
-      ? `http://${window.location.hostname}:5000`
+      ? window.location.origin.replace(':3000', ':5000')
       : 'http://localhost:5000';
     
     console.log(`Connecting Socket.IO Client to: ${serverUrl}`);

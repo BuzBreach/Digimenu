@@ -52,7 +52,7 @@ export default function OrderTracker() {
 
   const sendFeedback = async () => {
     if (!customer || feedbackSent) return;
-    const serverUrl = `http://${window.location.hostname}:5000`;
+    const serverUrl = '';
     const res = await fetch(`${serverUrl}/api/orders/${activeOrder.id}/feedback`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -228,7 +228,7 @@ export default function OrderTracker() {
                       <button
                         key={value}
                         onClick={() => setRating(value)}
-                        className={`w-9 h-9 rounded-full text-sm font-black border ${rating >= value ? 'bg-gold-500/20 border-gold-500 text-gold-650' : 'bg-beige-50 border-beige-300 text-espresso-400'}`}
+                        className={`w-9 h-9 rounded-full text-sm font-black border smooth-transition cursor-pointer hover:scale-110 active:scale-95 ${rating >= value ? 'bg-gold-500/20 border-gold-500 text-gold-650 shadow-md shadow-gold-500/20' : 'bg-beige-50 border-beige-300 text-espresso-400 hover:border-gold-300'}`}
                       >
                         ★
                       </button>

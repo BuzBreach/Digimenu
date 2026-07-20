@@ -82,7 +82,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     setLoading(true);
     setOrderError('');
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       
       const payload = {
         customerId: customer.id,

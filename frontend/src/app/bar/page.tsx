@@ -41,7 +41,7 @@ export default function BarDisplaySystem() {
 
   const fetchOrders = async () => {
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       const accessToken = new URLSearchParams(window.location.search).get('access');
       if (accessToken) localStorage.setItem('niva_admin_token', accessToken);
       const token = accessToken || localStorage.getItem('niva_admin_token');
@@ -115,7 +115,7 @@ export default function BarDisplaySystem() {
 
   const handleUpdateItemStatus = async (orderId: string, itemId: string, nextStatus: string) => {
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       const token = localStorage.getItem('niva_admin_token');
 
       const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/items/${itemId}/status`, {
@@ -139,7 +139,7 @@ export default function BarDisplaySystem() {
 
   const handleUpdateOrderStatus = async (orderId: string, nextStatus: string) => {
     try {
-      const serverUrl = `http://${window.location.hostname}:5000`;
+      const serverUrl = '';
       const token = localStorage.getItem('niva_admin_token');
 
       const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/status`, {

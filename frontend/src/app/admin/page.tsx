@@ -111,8 +111,7 @@ export default function AdminDashboard() {
 
   // Sockets & Fetch logic
   const getServerUrl = () => {
-    const host = typeof window === 'undefined' ? 'localhost' : window.location.hostname;
-    return `http://${host}:5000`;
+    return '';
   };
 
   const fetchAdminJson = async (path: string, setter: (data: any) => void) => {

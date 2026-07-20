@@ -5,18 +5,20 @@ type AppRoutes = "/" | "/admin" | "/bar" | "/billing" | "/kds" | "/payment/retur
 type PageRoutes = never
 type LayoutRoutes = "/"
 type RedirectRoutes = never
-type RewriteRoutes = never
+type RewriteRoutes = "/api/[[...path]]" | "/socket.io/[[...path]]"
 type Routes = AppRoutes | PageRoutes | LayoutRoutes | RedirectRoutes | RewriteRoutes
 
 
 interface ParamMap {
   "/": {}
   "/admin": {}
+  "/api/[[...path]]": { "path"?: string[]; }
   "/bar": {}
   "/billing": {}
   "/kds": {}
   "/payment/return": {}
   "/qr": {}
+  "/socket.io/[[...path]]": { "path"?: string[]; }
 }
 
 

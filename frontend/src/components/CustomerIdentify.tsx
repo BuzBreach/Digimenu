@@ -13,7 +13,7 @@ export default function CustomerIdentify() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const serverUrl = () => `http://${window.location.hostname}:5000`;
+  const serverUrl = () => '';
 
   const handleIdentify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,14 +30,29 @@ export default function CustomerIdentify() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile, name: name.trim() || undefined }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Could not open menu.');
+      const contentType = res.headers.get('content-type') || '';
+      const bodyText = await res.text();
+      const data = contentType.includes('application/json')
+        ? JSON.parse(bodyText)
+        : null;
+
+      if (!res.ok) {
+        throw new Error(
+          data?.error ||
+            bodyText?.slice(0, 160) ||
+            `Could not open menu (HTTP ${res.status}).`
+        );
+      }
 
       setCustomer(data.customer);
       setRecommendations(data.recommendations || []);
       setPastOrders(data.orderHistory || []);
     } catch (err: any) {
-      setError(err.message || 'Server connection failed. Make sure server is running.');
+      setError(
+        err.message?.includes('<!DOCTYPE') || err.message?.includes('Unexpected token')
+          ? 'Backend is not reachable from the ngrok page. Start the backend on port 5000 and keep it running.'
+          : err.message || 'Server connection failed. Make sure server is running.'
+      );
     } finally {
       setLoading(false);
     }

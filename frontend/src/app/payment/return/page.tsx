@@ -26,7 +26,7 @@ export default function PaymentReturnPage() {
 
   const serverUrl = useMemo(() => {
     if (typeof window === 'undefined') return '';
-    return `http://${window.location.hostname}:5000`;
+    return '';
   }, []);
 
   const checkStatus = async () => {

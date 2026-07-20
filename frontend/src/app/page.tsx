@@ -38,10 +38,10 @@ export default function CustomerMenuPage() {
             try {
               resolve(JSON.parse(request.responseText));
             } catch {
-              reject(new Error('Menu response was not valid JSON'));
+              reject(new Error(`Menu response was not valid JSON: ${request.responseText.slice(0, 120)}`));
             }
           } else {
-            reject(new Error('Menu fetch failed'));
+            reject(new Error(`Menu fetch failed (HTTP ${request.status})`));
           }
         };
         request.onerror = () => reject(new Error('Local menu network request failed'));
@@ -51,7 +51,7 @@ export default function CustomerMenuPage() {
 
     const fetchMenu = async () => {
       try {
-        const serverUrl = `http://${window.location.hostname}:5000`;
+        const serverUrl = '';
         const data = await loadMenuJson(`${serverUrl}/api/menu`);
         setCategories(data);
       } catch (err) {
