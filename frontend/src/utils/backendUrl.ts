@@ -4,10 +4,10 @@ export const getBackendUrl = () => {
 
   if (typeof window === 'undefined') return '';
 
-  const { protocol, hostname, origin } = window.location;
+  const { protocol, hostname } = window.location;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return `${protocol}//${hostname}:5000`;
   }
 
-  return origin;
+  return 'http://127.0.0.1:5000';
 };
