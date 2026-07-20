@@ -12,10 +12,11 @@ const env = {
   DIRECT_URL: process.env.DIRECT_URL || process.env.DATABASE_URL,
 };
 
-const result = spawnSync('npx', ['prisma', ...prismaArgs], {
+const prismaCliPath = require.resolve('prisma/build/index.js');
+
+const result = spawnSync(process.execPath, [prismaCliPath, ...prismaArgs], {
   env,
   stdio: 'inherit',
-  shell: process.platform === 'win32',
 });
 
 if (result.error) {
