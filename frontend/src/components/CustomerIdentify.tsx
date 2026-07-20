@@ -48,7 +48,7 @@ export default function CustomerIdentify() {
     } catch (err: any) {
       setError(
         err.message?.includes('<!DOCTYPE') || err.message?.includes('Unexpected token')
-          ? 'Backend is not reachable from the ngrok page. Start the backend on port 5000 and keep it running.'
+          ? 'Backend is not reachable from this page. Make sure the API is running and the frontend is pointed at it.'
           : err.message || 'Server connection failed. Make sure server is running.'
       );
     } finally {
