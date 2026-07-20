@@ -6,7 +6,13 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   async rewrites() {
-    if (process.env.VERCEL) {
+    const isProductionRuntime =
+      process.env.NODE_ENV === 'production' ||
+      process.env.VERCEL === '1' ||
+      process.env.VERCEL === 'true' ||
+      Boolean(process.env.VERCEL_URL);
+
+    if (isProductionRuntime) {
       return [];
     }
 

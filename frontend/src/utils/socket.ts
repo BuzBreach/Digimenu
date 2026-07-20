@@ -5,8 +5,10 @@ let socket: Socket | null = null;
 export const getSocket = (): Socket => {
   if (!socket) {
     const serverUrl = typeof window !== 'undefined'
-      ? window.location.origin.replace(':3000', ':5000')
-      : 'http://localhost:5000';
+      ? ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+          ? window.location.origin.replace(':3000', ':5000')
+          : window.location.origin)
+      : '';
     
     console.log(`Connecting Socket.IO Client to: ${serverUrl}`);
     
