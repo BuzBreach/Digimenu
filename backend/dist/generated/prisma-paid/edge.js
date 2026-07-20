@@ -336,7 +336,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\marap\\OneDrive\\Desktop\\Digital menu AI\\backend\\src\\generated\\prisma-paid",
+      "value": "C:\\Users\\marap\\OneDrive\\Desktop\\BuzBreach\\Digital menu AI\\backend\\src\\generated\\prisma-paid",
       "fromEnvVar": null
     },
     "config": {
@@ -350,7 +350,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\marap\\OneDrive\\Desktop\\Digital menu AI\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\marap\\OneDrive\\Desktop\\BuzBreach\\Digital menu AI\\backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -364,6 +364,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
