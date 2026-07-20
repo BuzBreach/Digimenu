@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Phone, User, ArrowRight, Sparkles, MapPin } from 'lucide-react';
 import { usePOSStore } from '../store/usePOSStore';
 import { brand } from '../utils/brand';
-import { getBackendUrl } from '../utils/backendUrl';
 
 export default function CustomerIdentify() {
   const { tableNumber, tableLocked, setCustomer, setRecommendations, setPastOrders } = usePOSStore();
@@ -24,7 +23,7 @@ export default function CustomerIdentify() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`${getBackendUrl()}/api/customers/identify`, {
+      const res = await fetch('/api/customers/identify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobile, name: name.trim() || undefined }),

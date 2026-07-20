@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Clock, RefreshCw, XCircle } from 'lucide-react';
 import { formatCurrency } from '../../../utils/currency';
-import { getBackendUrl } from '../../../utils/backendUrl';
 
 type PaymentState = {
   status: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | string;
@@ -25,13 +24,13 @@ export default function PaymentReturnPage() {
     setOrderId(params.get('orderId') || '');
   }, []);
 
-  const serverUrl = useMemo(() => getBackendUrl(), []);
+  const serverUrl = useMemo(() => '', []);
 
   const checkStatus = async () => {
     if (!merchantOrderId || !serverUrl) return;
     setChecking(true);
     try {
-      const res = await fetch(`${serverUrl}/api/payments/phonepe/status/${encodeURIComponent(merchantOrderId)}`);
+      const res = await fetch(`/api/payments/phonepe/status/${encodeURIComponent(merchantOrderId)}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Unable to check payment status.');
       setState({ status: data.status, order: data.order, payment: data.payment });

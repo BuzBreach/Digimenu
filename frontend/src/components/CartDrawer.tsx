@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, X, Plus, Minus, Trash2, ChevronRight, Clipboard, Sparkles } from 'lucide-react';
 import { usePOSStore } from '../store/usePOSStore';
 import { formatCurrency } from '../utils/currency';
-import { getBackendUrl } from '../utils/backendUrl';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -83,8 +82,6 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     setLoading(true);
     setOrderError('');
     try {
-      const serverUrl = getBackendUrl();
-      
       const payload = {
         customerId: customer.id,
         tableNumber,
@@ -100,7 +97,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         finalPrice: parseFloat(total.toFixed(2)),
       };
 
-      const res = await fetch(`${serverUrl}/api/orders`, {
+      const res = await fetch('/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
