@@ -4,7 +4,7 @@
   "description": "Backend for premium cafe/bar/kitchen digital menu ordering system",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && node scripts/copy-generated.js",
+    "build": "node ./node_modules/typescript/bin/tsc && node scripts/copy-generated.js",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "prisma:generate": "prisma generate",
@@ -30,7 +30,6 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.24",
     "prisma": "^5.10.2",
-    "tsx": "^4.7.1",
-    "typescript": "^5.3.3"
+    "tsx": "^4.7.1"
   }
 }
