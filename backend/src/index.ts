@@ -22,8 +22,9 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
   .map((origin) => origin.trim())
   .filter(Boolean);
 const localOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3})(:\d+)?$/;
+const tunnelOriginPattern = /^https?:\/\/([a-z0-9-]+\.)?(ngrok\.io|ngrok-free\.app)(:\d+)?$/i;
 const validateCorsOrigin = (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-  if (!origin || allowedOrigins.includes(origin) || localOriginPattern.test(origin)) {
+  if (!origin || allowedOrigins.includes(origin) || localOriginPattern.test(origin) || tunnelOriginPattern.test(origin)) {
     return callback(null, true);
   }
   return callback(new Error('CORS origin is not allowed.'));
