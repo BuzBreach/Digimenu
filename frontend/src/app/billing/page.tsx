@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getSocket } from '../../utils/socket';
 import { ReceiptText, Printer, RefreshCw, XCircle, CheckCircle } from 'lucide-react';
 import { formatCurrency } from '../../utils/currency';
+import { apiUrl } from '../../utils/backendUrl';
 
 export default function BillingCounterPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -19,7 +20,7 @@ export default function BillingCounterPage() {
       const accessToken = new URLSearchParams(window.location.search).get('access');
       if (accessToken) localStorage.setItem('niva_admin_token', accessToken);
       const token = accessToken || localStorage.getItem('niva_admin_token');
-      const res = await fetch('/api/admin/orders', {
+      const res = await fetch(apiUrl('/api/admin/orders'), {
         headers: { Authorization: `Bearer ${token || ''}` },
         cache: 'no-store',
       });
@@ -48,7 +49,7 @@ export default function BillingCounterPage() {
 
   const printBill = async (order: any) => {
     const token = localStorage.getItem('niva_admin_token');
-    const res = await fetch(`/api/orders/${order.id}/bill`, {
+    const res = await fetch(apiUrl(`/api/orders/${order.id}/bill`), {
       headers: { Authorization: `Bearer ${token || ''}` },
     });
     const data = await res.json();
@@ -63,7 +64,7 @@ export default function BillingCounterPage() {
 
   const denyRefund = async (order: any) => {
     const token = localStorage.getItem('niva_admin_token');
-    const res = await fetch(`/api/admin/orders/${order.id}/refund`, {
+    const res = await fetch(apiUrl(`/api/admin/orders/${order.id}/refund`), {
       method: 'POST',
       headers: { Authorization: `Bearer ${token || ''}` },
     });
@@ -75,7 +76,7 @@ export default function BillingCounterPage() {
   const markAsCompleted = async (order: any) => {
     const token = localStorage.getItem('niva_admin_token');
     try {
-      const res = await fetch(`/api/admin/orders/${order.id}/status`, {
+      const res = await fetch(apiUrl(`/api/admin/orders/${order.id}/status`), {
         method: 'PUT',
         headers: { 
           Authorization: `Bearer ${token || ''}`,

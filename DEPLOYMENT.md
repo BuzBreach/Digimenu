@@ -115,9 +115,13 @@ After changing DB variables:
 
 ## Frontend Backend URL
 
-The frontend now reads the backend origin from `NEXT_PUBLIC_BACKEND_URL`.
+The frontend resolves the backend origin in this order:
 
-- Local dev: set it to `http://127.0.0.1:5000` in `frontend/.env.local`.
+1. `NEXT_PUBLIC_BACKEND_URL` if it is set.
+2. `http://HOST:5000` automatically for localhost and private LAN hosts.
+3. Same-origin as a fallback for public deployments that proxy `/api` and `/socket.io`.
+
+- Local dev: you can set it to `http://127.0.0.1:5000` in `frontend/.env.local`, but it is no longer required on localhost or LAN.
 - Vercel or ngrok: set it to the public backend URL, for example `https://api.yourdomain.com`.
 
-If this is not set, local browser sessions fall back to `localhost:5000`, and deployed browser sessions fall back to same-origin only if the platform is proxying `/api` and `/socket.io` to the backend.
+If this is not set, local browser sessions go directly to port `5000` on the current host, and deployed browser sessions fall back to same-origin only if the platform is proxying `/api` and `/socket.io` to the backend.

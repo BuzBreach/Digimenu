@@ -5,6 +5,7 @@ import { usePOSStore } from '../../store/usePOSStore';
 import { getSocket } from '../../utils/socket';
 import { CategoryIcon } from '../../components/CategoryNav';
 import { formatCurrency } from '../../utils/currency';
+import { apiUrl } from '../../utils/backendUrl';
 import {
   TrendingUp,
   ShoppingBag,
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
 
   // Sockets & Fetch logic
   const fetchAdminJson = async (path: string, setter: (data: any) => void) => {
-    const res = await fetch(path, {
+    const res = await fetch(apiUrl(path), {
       headers: { Authorization: `Bearer ${adminToken}` },
       cache: 'no-store',
     });
@@ -166,7 +167,7 @@ export default function AdminDashboard() {
   const fetchStaffAttendance = async () => {
     if (!adminToken) return;
     try {
-      const res = await fetch('/api/admin/staff/attendance', {
+      const res = await fetch(apiUrl('/api/admin/staff/attendance'), {
         headers: { Authorization: `Bearer ${adminToken}` },
         cache: 'no-store',
       });
@@ -184,7 +185,7 @@ export default function AdminDashboard() {
       socket.on('order:new', (newOrder) => {
         setOrders((prev) => [newOrder, ...prev]);
         // Re-trigger analytics load to keep sums accurate
-        fetch('/api/admin/analytics', {
+        fetch(apiUrl('/api/admin/analytics'), {
           headers: { Authorization: `Bearer ${adminToken}` },
           cache: 'no-store',
         })
@@ -220,7 +221,7 @@ export default function AdminDashboard() {
     setLoginError('');
 
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await fetch(apiUrl('/api/admin/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -242,7 +243,7 @@ export default function AdminDashboard() {
   // Status transitions
   const handleUpdateOrderStatus = async (orderId: string, nextStatus: string) => {
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}/status`, {
+      const res = await fetch(apiUrl(`/api/admin/orders/${orderId}/status`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -260,7 +261,7 @@ export default function AdminDashboard() {
 
   const handleDenyRefund = async (orderId: string) => {
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}/refund`, {
+      const res = await fetch(apiUrl(`/api/admin/orders/${orderId}/refund`), {
         method: 'POST',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -287,7 +288,7 @@ export default function AdminDashboard() {
         : `/api/admin/categories`;
       const method = selectedCat ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await fetch(apiUrl(url), {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -309,7 +310,7 @@ export default function AdminDashboard() {
   const handleDeleteCategory = async (id: string) => {
     if (!confirm('Are you sure you want to delete this category? All its items will be deleted too!')) return;
     try {
-      await fetch(`/api/admin/categories/${id}`, {
+      await fetch(apiUrl(`/api/admin/categories/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -355,7 +356,7 @@ export default function AdminDashboard() {
         : `/api/admin/menu-items`;
       const method = selectedItem ? 'PUT' : 'POST';
 
-      const res = await fetch(url, {
+      const res = await fetch(apiUrl(url), {
         method,
         headers: {
           'Content-Type': 'application/json',
@@ -377,7 +378,7 @@ export default function AdminDashboard() {
   const handleDeleteMenuItem = async (id: string) => {
     if (!confirm('Are you sure you want to delete this menu item?')) return;
     try {
-      await fetch(`/api/admin/menu-items/${id}`, {
+      await fetch(apiUrl(`/api/admin/menu-items/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -424,7 +425,7 @@ export default function AdminDashboard() {
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/change-password', {
+      const res = await fetch(apiUrl('/api/admin/change-password'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({ currentPassword, newPassword }),
@@ -442,7 +443,7 @@ export default function AdminDashboard() {
   const handleCreateStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/users', {
+      const res = await fetch(apiUrl('/api/admin/users'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({ username: staffUsername, password: staffPassword, name: staffName, role: staffRole }),
@@ -463,7 +464,7 @@ export default function AdminDashboard() {
   const handleDeleteStaff = async (id: string) => {
     if (!confirm('Delete this staff account?')) return;
     try {
-      const res = await fetch(`/api/admin/users/${id}`, {
+      const res = await fetch(apiUrl(`/api/admin/users/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -490,7 +491,7 @@ export default function AdminDashboard() {
 
   const handleStaffAttendance = async (userId: string, action: 'check-in' | 'check-out') => {
     try {
-      const res = await fetch(`/api/admin/staff/${action}`, {
+      const res = await fetch(apiUrl(`/api/admin/staff/${action}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({ userId }),
@@ -507,7 +508,7 @@ export default function AdminDashboard() {
   const handleDownloadAttendanceCsv = async () => {
     try {
       const params = new URLSearchParams({ from: attendanceFrom, to: attendanceTo });
-      const res = await fetch(`/api/admin/staff/attendance.csv?${params.toString()}`, {
+      const res = await fetch(apiUrl(`/api/admin/staff/attendance.csv?${params.toString()}`), {
         headers: { Authorization: `Bearer ${adminToken}` },
         cache: 'no-store',
       });
@@ -530,7 +531,7 @@ export default function AdminDashboard() {
 
   const handleDownloadBackup = async () => {
     try {
-      const res = await fetch('/api/admin/backup', {
+      const res = await fetch(apiUrl('/api/admin/backup'), {
         headers: { Authorization: `Bearer ${adminToken}` },
         cache: 'no-store',
       });
@@ -551,7 +552,7 @@ export default function AdminDashboard() {
 
   const handleSaveLocalBackup = async () => {
     try {
-      const res = await fetch('/api/admin/backup/save-local', {
+      const res = await fetch(apiUrl('/api/admin/backup/save-local'), {
         method: 'POST',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -566,7 +567,7 @@ export default function AdminDashboard() {
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/settings', {
+      const res = await fetch(apiUrl('/api/admin/settings'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify(cafeSettings || {}),
@@ -584,7 +585,7 @@ export default function AdminDashboard() {
   const handleInventoryTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/inventory/transactions', {
+      const res = await fetch(apiUrl('/api/admin/inventory/transactions'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({
@@ -610,7 +611,7 @@ export default function AdminDashboard() {
     if (!confirm('Restore menu catalog from this backup? Orders and customers will not be overwritten.')) return;
     try {
       const backup = JSON.parse(await file.text());
-      const res = await fetch('/api/admin/restore', {
+      const res = await fetch(apiUrl('/api/admin/restore'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify(backup),

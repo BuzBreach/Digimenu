@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Clock, RefreshCw, XCircle } from 'lucide-react';
 import { formatCurrency } from '../../../utils/currency';
+import { apiUrl } from '../../../utils/backendUrl';
 
 type PaymentState = {
   status: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | string;
@@ -24,13 +25,11 @@ export default function PaymentReturnPage() {
     setOrderId(params.get('orderId') || '');
   }, []);
 
-  const serverUrl = useMemo(() => '', []);
-
   const checkStatus = async () => {
-    if (!merchantOrderId || !serverUrl) return;
+    if (!merchantOrderId) return;
     setChecking(true);
     try {
-      const res = await fetch(`/api/payments/phonepe/status/${encodeURIComponent(merchantOrderId)}`);
+      const res = await fetch(apiUrl(`/api/payments/phonepe/status/${encodeURIComponent(merchantOrderId)}`));
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Unable to check payment status.');
       setState({ status: data.status, order: data.order, payment: data.payment });
@@ -46,7 +45,7 @@ export default function PaymentReturnPage() {
     checkStatus();
     const timer = window.setInterval(checkStatus, 4000);
     return () => window.clearInterval(timer);
-  }, [merchantOrderId, serverUrl]);
+  }, [merchantOrderId]);
 
   const paid = state.status === 'PAID';
   const failed = state.status === 'FAILED' || state.status === 'CANCELLED';

@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { getSocket } from '../../utils/socket';
 import { Clock, Play, CheckCircle2, ChevronRight, Volume2, VolumeX, AlertCircle, RefreshCw } from 'lucide-react';
+import { apiUrl } from '../../utils/backendUrl';
 
 export default function KitchenDisplaySystem() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -54,7 +55,7 @@ export default function KitchenDisplaySystem() {
       if (accessToken) localStorage.setItem('niva_admin_token', accessToken);
       const token = accessToken || localStorage.getItem('niva_admin_token');
       
-      const res = await fetch('/api/admin/orders', {
+      const res = await fetch(apiUrl('/api/admin/orders'), {
         headers: {
           'Authorization': `Bearer ${token || ''}`,
         },
@@ -118,7 +119,7 @@ export default function KitchenDisplaySystem() {
     try {
       const token = localStorage.getItem('niva_admin_token');
 
-      const res = await fetch(`/api/admin/orders/${orderId}/items/${itemId}/status`, {
+      const res = await fetch(apiUrl(`/api/admin/orders/${orderId}/items/${itemId}/status`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +145,7 @@ export default function KitchenDisplaySystem() {
     try {
       const token = localStorage.getItem('niva_admin_token');
 
-      const res = await fetch(`/api/admin/orders/${orderId}/status`, {
+      const res = await fetch(apiUrl(`/api/admin/orders/${orderId}/status`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -19,7 +19,7 @@ export const getSocket = (): Socket => {
     });
 
     socket.on('connect', () => {
-      console.log('Socket.IO connected to local server successfully!');
+      console.log('Socket.IO connected successfully!');
     });
 
     socket.on('disconnect', (reason) => {
