@@ -48,7 +48,7 @@ export default function CustomerIdentify() {
     } catch (err: any) {
       setError(
         err.message?.includes('<!DOCTYPE') || err.message?.includes('Unexpected token')
-          ? 'Backend is not reachable from this page. Make sure the API is running and the frontend is pointed at it.'
+          ? 'Could not contact the API. Check that the backend is running and the frontend deployment is proxying /api.'
           : err.message || 'Server connection failed. Make sure server is running.'
       );
     } finally {

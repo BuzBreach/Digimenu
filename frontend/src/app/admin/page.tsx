@@ -110,13 +110,8 @@ export default function AdminDashboard() {
   const [inventoryNote, setInventoryNote] = useState('');
 
   // Sockets & Fetch logic
-  const getServerUrl = () => {
-    return '';
-  };
-
   const fetchAdminJson = async (path: string, setter: (data: any) => void) => {
-    const serverUrl = getServerUrl();
-    const res = await fetch(`${serverUrl}${path}`, {
+    const res = await fetch(path, {
       headers: { Authorization: `Bearer ${adminToken}` },
       cache: 'no-store',
     });
@@ -171,8 +166,7 @@ export default function AdminDashboard() {
   const fetchStaffAttendance = async () => {
     if (!adminToken) return;
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/staff/attendance`, {
+      const res = await fetch('/api/admin/staff/attendance', {
         headers: { Authorization: `Bearer ${adminToken}` },
         cache: 'no-store',
       });
@@ -190,8 +184,7 @@ export default function AdminDashboard() {
       socket.on('order:new', (newOrder) => {
         setOrders((prev) => [newOrder, ...prev]);
         // Re-trigger analytics load to keep sums accurate
-        const serverUrl = getServerUrl();
-        fetch(`${serverUrl}/api/admin/analytics`, {
+        fetch('/api/admin/analytics', {
           headers: { Authorization: `Bearer ${adminToken}` },
           cache: 'no-store',
         })
@@ -227,8 +220,7 @@ export default function AdminDashboard() {
     setLoginError('');
 
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/login`, {
+      const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -250,8 +242,7 @@ export default function AdminDashboard() {
   // Status transitions
   const handleUpdateOrderStatus = async (orderId: string, nextStatus: string) => {
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/status`, {
+      const res = await fetch(`/api/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -269,8 +260,7 @@ export default function AdminDashboard() {
 
   const handleDenyRefund = async (orderId: string) => {
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/refund`, {
+      const res = await fetch(`/api/admin/orders/${orderId}/refund`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -286,7 +276,6 @@ export default function AdminDashboard() {
   const handleSaveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const serverUrl = getServerUrl();
       const payload = {
         name: catName,
         icon: catIcon,
@@ -294,8 +283,8 @@ export default function AdminDashboard() {
       };
 
       const url = selectedCat
-        ? `${serverUrl}/api/admin/categories/${selectedCat.id}`
-        : `${serverUrl}/api/admin/categories`;
+        ? `/api/admin/categories/${selectedCat.id}`
+        : `/api/admin/categories`;
       const method = selectedCat ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -320,8 +309,7 @@ export default function AdminDashboard() {
   const handleDeleteCategory = async (id: string) => {
     if (!confirm('Are you sure you want to delete this category? All its items will be deleted too!')) return;
     try {
-      const serverUrl = getServerUrl();
-      await fetch(`${serverUrl}/api/admin/categories/${id}`, {
+      await fetch(`/api/admin/categories/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -335,7 +323,6 @@ export default function AdminDashboard() {
   const handleSaveMenuItem = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const serverUrl = getServerUrl();
       const addOnsParsed = itemAddOns
         .map((addOn) => ({
           name: addOn.name.trim(),
@@ -364,8 +351,8 @@ export default function AdminDashboard() {
       };
 
       const url = selectedItem
-        ? `${serverUrl}/api/admin/menu-items/${selectedItem.id}`
-        : `${serverUrl}/api/admin/menu-items`;
+        ? `/api/admin/menu-items/${selectedItem.id}`
+        : `/api/admin/menu-items`;
       const method = selectedItem ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -390,8 +377,7 @@ export default function AdminDashboard() {
   const handleDeleteMenuItem = async (id: string) => {
     if (!confirm('Are you sure you want to delete this menu item?')) return;
     try {
-      const serverUrl = getServerUrl();
-      await fetch(`${serverUrl}/api/admin/menu-items/${id}`, {
+      await fetch(`/api/admin/menu-items/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -438,8 +424,7 @@ export default function AdminDashboard() {
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/change-password`, {
+      const res = await fetch('/api/admin/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({ currentPassword, newPassword }),
@@ -457,8 +442,7 @@ export default function AdminDashboard() {
   const handleCreateStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/users`, {
+      const res = await fetch('/api/admin/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({ username: staffUsername, password: staffPassword, name: staffName, role: staffRole }),
@@ -479,8 +463,7 @@ export default function AdminDashboard() {
   const handleDeleteStaff = async (id: string) => {
     if (!confirm('Delete this staff account?')) return;
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/users/${id}`, {
+      const res = await fetch(`/api/admin/users/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -507,8 +490,7 @@ export default function AdminDashboard() {
 
   const handleStaffAttendance = async (userId: string, action: 'check-in' | 'check-out') => {
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/staff/${action}`, {
+      const res = await fetch(`/api/admin/staff/${action}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({ userId }),
@@ -524,9 +506,8 @@ export default function AdminDashboard() {
 
   const handleDownloadAttendanceCsv = async () => {
     try {
-      const serverUrl = getServerUrl();
       const params = new URLSearchParams({ from: attendanceFrom, to: attendanceTo });
-      const res = await fetch(`${serverUrl}/api/admin/staff/attendance.csv?${params.toString()}`, {
+      const res = await fetch(`/api/admin/staff/attendance.csv?${params.toString()}`, {
         headers: { Authorization: `Bearer ${adminToken}` },
         cache: 'no-store',
       });
@@ -549,8 +530,7 @@ export default function AdminDashboard() {
 
   const handleDownloadBackup = async () => {
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/backup`, {
+      const res = await fetch('/api/admin/backup', {
         headers: { Authorization: `Bearer ${adminToken}` },
         cache: 'no-store',
       });
@@ -571,8 +551,7 @@ export default function AdminDashboard() {
 
   const handleSaveLocalBackup = async () => {
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/backup/save-local`, {
+      const res = await fetch('/api/admin/backup/save-local', {
         method: 'POST',
         headers: { Authorization: `Bearer ${adminToken}` },
       });
@@ -587,8 +566,7 @@ export default function AdminDashboard() {
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/settings`, {
+      const res = await fetch('/api/admin/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify(cafeSettings || {}),
@@ -606,8 +584,7 @@ export default function AdminDashboard() {
   const handleInventoryTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/inventory/transactions`, {
+      const res = await fetch('/api/admin/inventory/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify({
@@ -633,8 +610,7 @@ export default function AdminDashboard() {
     if (!confirm('Restore menu catalog from this backup? Orders and customers will not be overwritten.')) return;
     try {
       const backup = JSON.parse(await file.text());
-      const serverUrl = getServerUrl();
-      const res = await fetch(`${serverUrl}/api/admin/restore`, {
+      const res = await fetch('/api/admin/restore', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
         body: JSON.stringify(backup),
