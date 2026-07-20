@@ -93,3 +93,22 @@ If the cafe server is LAN-only with no public webhook URL, use billing/counter m
 ## Cancellation And Refund Rule
 
 Customers can cancel only while the order is still pending and inside the five-minute cancellation window. After five minutes, cancellation closes and refunds are denied by policy.
+
+## Vercel Database Setup (Important)
+
+If you deploy backend on Vercel, configure database variables in the Vercel project settings.
+
+- `DATABASE_URL`: pooled connection string (recommended for runtime requests).
+- `DIRECT_URL`: direct connection string (used by Prisma for schema operations).
+
+For Supabase, use:
+
+- `DATABASE_URL` = Supabase pooled URL (PgBouncer, usually port `6543`).
+- `DIRECT_URL` = Supabase direct URL (usually port `5432`).
+
+Do not set either value to `localhost`, `127.0.0.1`, or a private LAN IP in Vercel.
+
+After changing DB variables:
+
+1. Redeploy backend service.
+2. Run `npm run db:deploy` once against production database (if migrations exist).

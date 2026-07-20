@@ -4,13 +4,14 @@
   "description": "Backend for premium cafe/bar/kitchen digital menu ordering system",
   "main": "dist/index.js",
   "scripts": {
-    "build": "node ./node_modules/typescript/bin/tsc && node scripts/copy-generated.js",
+    "build": "node scripts/prisma-run.js generate && node ./node_modules/typescript/bin/tsc && node scripts/copy-generated.js",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "node scripts/prisma-run.js generate",
+    "prisma:migrate": "node scripts/prisma-run.js migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "db:setup": "prisma db push"
+    "db:setup": "node scripts/prisma-run.js db push",
+    "db:deploy": "node scripts/prisma-run.js migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

@@ -60,6 +60,7 @@ Backend:
 CAFE_NAME="Blue Mug Cafe"
 CAFE_LEGAL_NAME="Blue Mug Cafe Pvt Ltd"
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/bluemug_pos?schema=public"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/bluemug_pos?schema=public"
 JWT_SECRET="use-a-new-secret-for-this-client"
 SMS_PROVIDER="fast2sms"
 FAST2SMS_API_KEY="client_fast2sms_key"
@@ -68,6 +69,11 @@ PHONEPE_CLIENT_ID="client_phonepe_client_id"
 PHONEPE_CLIENT_SECRET="client_phonepe_client_secret"
 PHONEPE_MERCHANT_ID="client_phonepe_merchant_id"
 ```
+
+For Vercel + Supabase deployments, set:
+
+- `DATABASE_URL` to the pooled Supabase URL (PgBouncer).
+- `DIRECT_URL` to the direct Supabase URL.
 
 Frontend:
 
