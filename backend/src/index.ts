@@ -60,6 +60,7 @@ app.use(express.json({
 }));
 
 const PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || '0.0.0.0';
 const JWT_SECRET = process.env.JWT_SECRET || 'niva_secret_token_12345';
 const isWeakJwtSecret = !process.env.JWT_SECRET || JWT_SECRET.includes('niva_secret_token_12345');
 const CAFE_NAME = process.env.CAFE_NAME || 'Niva Cafe';
@@ -2532,10 +2533,10 @@ io.on('connection', (socket) => {
 });
 
 // Start the Server
-server.listen(PORT, () => {
+server.listen(Number(PORT), HOST, () => {
   console.log(`===============================================`);
   console.log(`  NIVA DIGITAL POS NETWORK SERVER ONLINE       `);
-  console.log(`  Running on http://localhost:${PORT}          `);
+  console.log(`  Running on http://${HOST}:${PORT}            `);
   console.log(`  Prisma connected to PostgreSQL               `);
   if (isWeakJwtSecret) {
     console.warn(`  SECURITY: Set a unique JWT_SECRET in backend/.env before client deployment.`);
