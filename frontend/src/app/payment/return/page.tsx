@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Clock, RefreshCw, XCircle } from 'lucide-react';
 import { formatCurrency } from '../../../utils/currency';
+import { getBackendUrl } from '../../../utils/backendUrl';
 
 type PaymentState = {
   status: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELLED' | string;
@@ -24,10 +25,7 @@ export default function PaymentReturnPage() {
     setOrderId(params.get('orderId') || '');
   }, []);
 
-  const serverUrl = useMemo(() => {
-    if (typeof window === 'undefined') return '';
-    return '';
-  }, []);
+  const serverUrl = useMemo(() => getBackendUrl(), []);
 
   const checkStatus = async () => {
     if (!merchantOrderId || !serverUrl) return;

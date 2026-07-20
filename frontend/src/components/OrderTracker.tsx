@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePOSStore } from '../store/usePOSStore';
+import { getBackendUrl } from '../utils/backendUrl';
 import { getSocket } from '../utils/socket';
 import { Clock, CheckCircle2, ChevronLeft } from 'lucide-react';
 
@@ -52,8 +53,7 @@ export default function OrderTracker() {
 
   const sendFeedback = async () => {
     if (!customer || feedbackSent) return;
-    const serverUrl = '';
-    const res = await fetch(`${serverUrl}/api/orders/${activeOrder.id}/feedback`, {
+    const res = await fetch(`${getBackendUrl()}/api/orders/${activeOrder.id}/feedback`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ customerId: customer.id, rating, comment }),

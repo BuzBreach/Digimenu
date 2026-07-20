@@ -112,3 +112,12 @@ After changing DB variables:
 
 1. Redeploy backend service.
 2. Run `npm run db:deploy` once against production database (if migrations exist).
+
+## Frontend Backend URL
+
+The frontend now reads the backend origin from `NEXT_PUBLIC_BACKEND_URL`.
+
+- Local dev: set it to `http://127.0.0.1:5000` in `frontend/.env.local`.
+- Vercel or ngrok: set it to the public backend URL, for example `https://api.yourdomain.com`.
+
+If this is not set, local browser sessions fall back to `localhost:5000`, and deployed browser sessions fall back to same-origin only if the platform is proxying `/api` and `/socket.io` to the backend.

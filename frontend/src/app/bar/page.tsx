@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+import { getBackendUrl } from '../../utils/backendUrl';
 import { getSocket } from '../../utils/socket';
 import { Clock, Play, CheckCircle2, ChevronRight, Volume2, VolumeX, AlertCircle, RefreshCw } from 'lucide-react';
 
@@ -41,12 +42,11 @@ export default function BarDisplaySystem() {
 
   const fetchOrders = async () => {
     try {
-      const serverUrl = '';
       const accessToken = new URLSearchParams(window.location.search).get('access');
       if (accessToken) localStorage.setItem('niva_admin_token', accessToken);
       const token = accessToken || localStorage.getItem('niva_admin_token');
 
-      const res = await fetch(`${serverUrl}/api/admin/orders`, {
+      const res = await fetch(`${getBackendUrl()}/api/admin/orders`, {
         headers: {
           'Authorization': `Bearer ${token || ''}`,
         },
@@ -115,10 +115,9 @@ export default function BarDisplaySystem() {
 
   const handleUpdateItemStatus = async (orderId: string, itemId: string, nextStatus: string) => {
     try {
-      const serverUrl = '';
       const token = localStorage.getItem('niva_admin_token');
 
-      const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/items/${itemId}/status`, {
+      const res = await fetch(`${getBackendUrl()}/api/admin/orders/${orderId}/items/${itemId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -139,10 +138,9 @@ export default function BarDisplaySystem() {
 
   const handleUpdateOrderStatus = async (orderId: string, nextStatus: string) => {
     try {
-      const serverUrl = '';
       const token = localStorage.getItem('niva_admin_token');
 
-      const res = await fetch(`${serverUrl}/api/admin/orders/${orderId}/status`, {
+      const res = await fetch(`${getBackendUrl()}/api/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

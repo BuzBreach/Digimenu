@@ -11,6 +11,7 @@ import { ShoppingBag } from 'lucide-react';
 import { getSocket } from '../utils/socket';
 import { formatCurrency } from '../utils/currency';
 import { brand } from '../utils/brand';
+import { getBackendUrl } from '../utils/backendUrl';
 
 export default function CustomerMenuPage() {
   const {
@@ -51,8 +52,7 @@ export default function CustomerMenuPage() {
 
     const fetchMenu = async () => {
       try {
-        const serverUrl = '';
-        const data = await loadMenuJson(`${serverUrl}/api/menu`);
+        const data = await loadMenuJson(`${getBackendUrl()}/api/menu`);
         setCategories(data);
       } catch (err) {
         console.error('Local network menu sync error:', err);

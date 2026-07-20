@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePOSStore } from '../../store/usePOSStore';
+import { getBackendUrl } from '../../utils/backendUrl';
 import { getSocket } from '../../utils/socket';
 import { CategoryIcon } from '../../components/CategoryNav';
 import { formatCurrency } from '../../utils/currency';
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
 
   // Sockets & Fetch logic
   const getServerUrl = () => {
-    return '';
+    return getBackendUrl();
   };
 
   const fetchAdminJson = async (path: string, setter: (data: any) => void) => {
