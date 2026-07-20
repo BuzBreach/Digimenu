@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePOSStore } from '../store/usePOSStore';
 import { getSocket } from '../utils/socket';
+import { apiUrl } from '../utils/backendUrl';
 import { Clock, CheckCircle2, ChevronLeft } from 'lucide-react';
 
 export default function OrderTracker() {
@@ -52,7 +53,7 @@ export default function OrderTracker() {
 
   const sendFeedback = async () => {
     if (!customer || feedbackSent) return;
-    const res = await fetch(`/api/orders/${activeOrder.id}/feedback`, {
+    const res = await fetch(apiUrl(`/api/orders/${activeOrder.id}/feedback`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ customerId: customer.id, rating, comment }),

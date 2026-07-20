@@ -9,20 +9,16 @@ const nextConfig: NextConfig = {
     const backendOrigin =
       process.env.BACKEND_INTERNAL_URL ||
       process.env.NEXT_PUBLIC_BACKEND_URL ||
-      'http://127.0.0.1:5000';
+      '';
+
+    if (!backendOrigin) {
+      return [];
+    }
 
     return [
       {
-        source: '/api',
-        destination: `${backendOrigin}/api`,
-      },
-      {
         source: '/api/:path*',
         destination: `${backendOrigin}/api/:path*`,
-      },
-      {
-        source: '/socket.io',
-        destination: `${backendOrigin}/socket.io`,
       },
       {
         source: '/socket.io/:path*',

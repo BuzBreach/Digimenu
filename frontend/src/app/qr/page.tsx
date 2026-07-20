@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { QrCode, Printer } from 'lucide-react';
+import { apiUrl } from '../../utils/backendUrl';
 
 export default function QRMenuPage() {
   const [tables, setTables] = useState(20);
@@ -42,7 +43,7 @@ export default function QRMenuPage() {
               </div>
               <h2 className="text-2xl font-serif-elegant font-bold">Table {table}</h2>
               <img
-                src={`/api/qr/table/${table}`}
+                src={apiUrl(`/api/qr/table/${table}`)}
                 alt={`QR code for table ${table}`}
                 className="w-48 h-48 mx-auto my-4 border border-beige-200 rounded-xl"
               />
