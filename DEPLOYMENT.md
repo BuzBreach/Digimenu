@@ -94,6 +94,22 @@ If the cafe server is LAN-only with no public webhook URL, use billing/counter m
 
 Customers can cancel only while the order is still pending and inside the five-minute cancellation window. After five minutes, cancellation closes and refunds are denied by policy.
 
+## Vercel + Supabase Setup
+
+Use Supabase for the production database. Vercel should only host the frontend unless you already have a separate backend host for the Express/Socket.IO server.
+
+### Supabase Database Setup
+
+1. Create a new Supabase project.
+2. Open the database connection details.
+3. Copy both connection strings:
+   - the pooled connection string for `DATABASE_URL`
+   - the direct connection string for `DIRECT_URL`
+4. Put both values in the backend environment.
+5. Redeploy the backend after saving the env vars.
+
+Use the pooled URL for runtime traffic and the direct URL for Prisma migrations.
+
 ## Vercel Database Setup (Important)
 
 If you deploy backend on Vercel, configure database variables in the Vercel project settings.
@@ -121,7 +137,7 @@ The frontend resolves the backend origin in this order:
 2. `http://HOST:5000` automatically for localhost and private LAN hosts.
 3. Same-origin as a fallback for public deployments that proxy `/api` and `/socket.io`.
 
-- Local dev: you can set it to `http://127.0.0.1:5000` in `frontend/.env.local`, but it is no longer required on localhost or LAN.
+- Local dev: you can leave it blank. The app auto-detects localhost/LAN and uses port `5000`.
 - Vercel or ngrok: set it to the public backend URL, for example `https://api.yourdomain.com`.
 
 If this is not set, local browser sessions go directly to port `5000` on the current host, and deployed browser sessions fall back to same-origin only if the platform is proxying `/api` and `/socket.io` to the backend.

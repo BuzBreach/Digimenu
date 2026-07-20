@@ -45,12 +45,12 @@ PhonePe cannot call a private `localhost` webhook from the internet. For testing
 
 1. Copy this project folder for the client.
 2. Rename the folder, for example `niva-pos-client-blue-mug`.
-3. Create a separate PostgreSQL database for that client.
-4. Copy `backend/.env.example` to `backend/.env`.
-5. Copy `frontend/.env.local.example` to `frontend/.env.local`.
-6. Fill the client brand, SMS provider, UPI ID, and database URL.
-7. Run database setup and seed.
-8. Start the backend and frontend on the client server.
+ 3. Create a Supabase project for that client, or another separate PostgreSQL database.
+ 4. Copy `backend/.env.example` to `backend/.env`.
+ 5. Copy `frontend/.env.local.example` to `frontend/.env.local`.
+ 6. Fill the client brand, SMS provider, UPI ID, and database URLs.
+ 7. Run database setup and seed.
+ 8. Start the backend and frontend on the client server or deploy them separately.
 
 ## Client-Specific Files
 
@@ -70,7 +70,7 @@ PHONEPE_CLIENT_SECRET="client_phonepe_client_secret"
 PHONEPE_MERCHANT_ID="client_phonepe_merchant_id"
 ```
 
-For Vercel + Supabase deployments, set:
+ For Vercel + Supabase deployments, set:
 
 - `DATABASE_URL` to the pooled Supabase URL (PgBouncer).
 - `DIRECT_URL` to the direct Supabase URL.
